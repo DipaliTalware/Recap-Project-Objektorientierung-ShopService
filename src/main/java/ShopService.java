@@ -15,8 +15,11 @@ public class ShopService {
     private final ProductRepo productRepo;
     @NonNull
     private final OrderRepo orderRepo;
+    @NonNull
+    private final IdService idService;
 
     public ShopService() {
+        idService = new UUIDService();
         productRepo = new ProductRepo();
         orderRepo = new OrderMapRepo();
     }
@@ -31,7 +34,7 @@ public class ShopService {
             products.add(productToOrder.get());
         }
 
-        Order newOrder = new Order(UUID.randomUUID().toString(), products, OrderStatus.PROCESSING, ZonedDateTime.now());
+        Order newOrder = new Order(idService.generateId(), products, OrderStatus.PROCESSING, ZonedDateTime.now());
 
         return orderRepo.addOrder(newOrder);
     }
