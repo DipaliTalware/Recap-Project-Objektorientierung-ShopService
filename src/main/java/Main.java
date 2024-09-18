@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -35,28 +37,26 @@ public class Main {
 //        System.out.println("List of orders: " + orderRepo.getOrders());
 
         Path path = Paths.get("transactions.txt");
-
+        Map<String, String> orderalies = new HashMap<>();
         Files.lines(path).forEach(line -> {
             String[] splitArray = line.split(" ");
             if (splitArray[0].equals("addOrder")) {
                 List<String> productIds = Arrays.stream(splitArray).skip(2).toList();
+
                 try {
                     Order createdOrder = shopService.addOrder(productIds);
-                    Order changedOrder = createdOrder.withId(splitArray[1]);
-                    System.out.println("Changed order  "+changedOrder);
+                    orderalies.put(splitArray[1], createdOrder.id());
                 } catch (ProductNotFoundException e) {
                     System.out.println("product not found");
                 }
-
             }
-            if(splitArray[0].equals("setStatus")){
-                shopService.updateOrder(splitArray[1], OrderStatus.valueOf(splitArray[2]));
+            if (splitArray[0].equals("setStatus")) {
+                Order updatedOrder = shopService.updateOrder(orderalies.get(splitArray[1]), OrderStatus.valueOf(splitArray[2]));
+                System.out.println(updatedOrder);
             }
-            if(splitArray[0].equals("printOrders")){
+            if (splitArray[0].equals("printOrders")) {
                 System.out.println(orderRepo.getOrders());
             }
         });
-
-
     }
 }
