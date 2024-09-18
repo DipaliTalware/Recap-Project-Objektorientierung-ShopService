@@ -42,8 +42,8 @@ public class Main {
                 List<String> productIds = Arrays.stream(splitArray).skip(2).toList();
                 try {
                     Order createdOrder = shopService.addOrder(productIds);
-                    createdOrder.withId(splitArray[1]);
-                    System.out.println("createdOrder "+createdOrder);
+                    Order changedOrder = createdOrder.withId(splitArray[1]);
+                    System.out.println("Changed order  "+changedOrder);
                 } catch (ProductNotFoundException e) {
                     System.out.println("product not found");
                 }
