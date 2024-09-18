@@ -1,3 +1,4 @@
+import lombok.With;
 import org.shop.exception.ProductNotFoundException;
 
 import java.util.ArrayList;
@@ -6,8 +7,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ShopService {
-    private ProductRepo productRepo = new ProductRepo();
-    private OrderRepo orderRepo = new OrderMapRepo();
+    private final ProductRepo productRepo = new ProductRepo();
+    private final OrderRepo orderRepo = new OrderMapRepo();
 
     public Order addOrder(List<String> productIds) throws ProductNotFoundException {
         List<Product> products = new ArrayList<>();
@@ -26,5 +27,13 @@ public class ShopService {
 
     public List<Order> orderStatus(OrderStatus orderStatus) {
         return orderRepo.getOrders().stream().filter(order -> order.orderStatus().equals(orderStatus)).toList();
+    }
+
+    public Order updateOrder(String orderId, OrderStatus newOrderStatus) {
+        Order foundOrder = orderRepo.getOrderById(orderId);
+        if(foundOrder == null){
+            return null;
+        }
+        return foundOrder.withOrderStatus(newOrderStatus);
     }
 }

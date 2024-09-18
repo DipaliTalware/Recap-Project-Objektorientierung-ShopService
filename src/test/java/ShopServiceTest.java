@@ -30,6 +30,27 @@ class ShopServiceTest {
 
         //WHEN & //THEN
         assertThrows(ProductNotFoundException.class, ()->shopService.addOrder(productsIds));
+    }
 
+    @Test
+    void updateOrderTest_WhenValidOrderId_updatesOrderByStatus() throws ProductNotFoundException {
+//    GIVEN
+        ShopService shopService = new ShopService();
+        String productId = "1";
+        Order actual = shopService.addOrder(List.of(productId));
+//    WHEN
+        Order updatedOrder = shopService.updateOrder(actual.id(), OrderStatus.COMPLETED);
+//    THEN
+        assertEquals(updatedOrder.orderStatus(), OrderStatus.COMPLETED);
+    }
+
+    @Test
+    void updateOrderTest_WhenInvalidOrderId(){
+//        GIVEN
+        ShopService shopService = new ShopService();
+//        WHEN
+        Order updateOrder = shopService.updateOrder("1", OrderStatus.COMPLETED);
+//        THEN
+        assertNull(updateOrder);
     }
 }
