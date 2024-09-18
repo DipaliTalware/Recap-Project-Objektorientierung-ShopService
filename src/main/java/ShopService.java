@@ -4,10 +4,7 @@ import lombok.With;
 import org.shop.exception.ProductNotFoundException;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class ShopService {
@@ -49,5 +46,16 @@ public class ShopService {
             return null;
         }
         return foundOrder.withOrderStatus(newOrderStatus);
+    }
+
+    public Map<OrderStatus, Order> getOldestOrderPerStatus() {
+        List<Order> processingOrders = orderRepo.getOrders().stream().filter(order -> order.orderStatus().equals(OrderStatus.PROCESSING)).sorted(Comparator.comparing(Order::timeStamp)).toList();
+        List<Order> inDeliveryOrders = orderRepo.getOrders().stream().filter(order -> order.orderStatus().equals(OrderStatus.IN_DELIVERY)).sorted(Comparator.comparing(Order::timeStamp)).toList();
+        List<Order> completedOrders = orderRepo.getOrders().stream().filter(order -> order.orderStatus().equals(OrderStatus.COMPLETED)).sorted(Comparator.comparing(Order::timeStamp)).toList();
+        Map<OrderStatus, Order> result = new HashMap<>();
+        result.put(OrderStatus.PROCESSING, processingOrders.getFirst());
+        result.put(OrderStatus.IN_DELIVERY, inDeliveryOrders.getFirst());
+        result.put(OrderStatus.COMPLETED, completedOrders.getFirst());
+        return result;
     }
 }
