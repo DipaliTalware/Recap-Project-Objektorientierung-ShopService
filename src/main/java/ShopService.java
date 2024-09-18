@@ -45,7 +45,9 @@ public class ShopService {
         if (foundOrder == null) {
             return null;
         }
-        return foundOrder.withOrderStatus(newOrderStatus);
+        Order updatedOrder = foundOrder.withOrderStatus(newOrderStatus);
+        orderRepo.addOrder(updatedOrder);
+        return updatedOrder;
     }
 
     public Map<OrderStatus, Order> getOldestOrderPerStatus() {
